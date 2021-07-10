@@ -67,7 +67,8 @@ export const FirestoreService = {
   remove,
   getUser,
   createDoc,
-  getDoc
+  getDoc,
+  db
 };
 
 export default firebase;

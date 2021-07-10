@@ -43,7 +43,7 @@ class App extends Component {
     const response = await fetch('https://geolocation-db.com/json/');
     const data = await response.json();
     this.setState({ ip: data.IPv4 });
-    console.log(data.IPv4);
+    //console.log(data.IPv4);
 
   }
 
@@ -69,7 +69,6 @@ class App extends Component {
       let weightedChoiceIdx = this.weightedChoice(count_reviews);
 
       FirestoreService.getDoc('youtube-comments',id_comment[weightedChoiceIdx]).get().then((doc) =>{
-
         this.setState({
           nextCommentId: id_comment[weightedChoiceIdx],
           comment: doc.data()['comment'],
@@ -78,6 +77,8 @@ class App extends Component {
           full_comment: listStores[0]['video-comments-count'],
           choiceIdx: weightedChoiceIdx
         });
+
+        
       });
 
     });
@@ -93,28 +94,42 @@ class App extends Component {
     //  console.log(doc.data());
     //});
     //trackPromise(
-    console.log(this.state);
     
     let choiceIdx = this.state.choiceIdx;
     let review_count = this.state.arrId[choiceIdx]+","+this.state.arrReviews[choiceIdx]
     let review_count_before = this.state.arrId[choiceIdx]+","+(this.state.arrReviews[choiceIdx]-1)
     let fullComment = this.state.full_comment;
     let changeArrReviews = this.state.arrReviews;
- 
-    console.log(fullComment); 
+    let currentIp = this.state.ip;
+
 
     fullComment = fullComment.replace(review_count,review_count_before);
     changeArrReviews[choiceIdx] = changeArrReviews[choiceIdx] - 1;
 
-    choiceIdx = this.weightedChoice(changeArrReviews);
-    console.log(fullComment);
+    
     //);
 
+    //console.log(this.state.arrId[choiceIdx]);
+
     FirestoreService.update('video-comments-count','count',{"video-comments-count": fullComment});
+    FirestoreService.db.collection("video-comments-reviews").doc(String(this.state.arrId[choiceIdx])).collection(String(this.state.ip)).doc('reviews').set({"reviews-count":  changeArrReviews[choiceIdx], "type": review});
 
-    //FirestoreService.update('video-comments-reviews','count',{"video-comments-count": fullComment});
+    choiceIdx = this.weightedChoice(changeArrReviews);
+    //console.log(this.state.arrId[choiceIdx]);
 
+    let nextCommentId = String(this.state.arrId[choiceIdx]);
+    FirestoreService.getDoc('youtube-comments',this.state.arrId[choiceIdx]).get().then((doc) =>{
 
+      this.setState({
+        nextCommentId: nextCommentId,
+        comment: doc.data()['comment'],
+        arrReviews: changeArrReviews,
+        full_comment: fullComment,
+        choiceIdx: choiceIdx
+      });
+    });
+    
+    
   }
   
   
@@ -126,6 +141,8 @@ class App extends Component {
         <h1>Hey some async call in progress ! </h1>
       );  
     }
+
+    console.log(this.state);
     return (
           <Container >
             <div class="center">
