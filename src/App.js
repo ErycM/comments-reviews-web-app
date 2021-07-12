@@ -22,17 +22,6 @@ class App extends Component {
     return idx
   }
 
-  getIpData=() => {
-    let ip = "";
-    fetch('https://geolocation-db.com/json/')
-      .then((response) => {
-        let data = response.json();
-        data.then(function (res) {
-          console.log(res.IPv4);
-          return res.IPv4;
-        });
-    });
-  }
 
   async UNSAFE_componentWillMount() {
     const response = await fetch('https://geolocation-db.com/json/');
@@ -92,7 +81,7 @@ class App extends Component {
     let review_count_before = this.state.arrId[choiceIdx]+","+(this.state.arrReviews[choiceIdx]-1)
     let fullComment = this.state.full_comment;
     let changeArrReviews = this.state.arrReviews;
-    let currentIp = this.state.ip;
+    //let currentIp = this.state.ip;
 
 
     fullComment = fullComment.replace(review_count,review_count_before);
@@ -120,7 +109,7 @@ class App extends Component {
   
   render(){
 
-    console.log(this.state);
+    //console.log(this.state);
     return (
           <Container className={this.state.firstHidden?"lds-facebook":"default"}>
             <div></div><div></div><div></div>
