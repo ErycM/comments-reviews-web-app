@@ -122,8 +122,8 @@ class App extends Component {
 
     console.log(this.state);
     return (
-          <Container className={this.state.firstHidden?"lds-circle":"default"}>
-            <div></div>
+          <Container className={this.state.firstHidden?"lds-facebook":"default"}>
+            <div></div><div></div><div></div>
             <div className={this.state.firstHidden?"center box":"center"}>
               <Row >
                 <Col>
