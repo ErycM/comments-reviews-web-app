@@ -1,16 +1,15 @@
 import './App.css';
 import React,{Component} from 'react';
 import {FirestoreService} from "./Components/firebaseApi";
-//import firebase from './Components/firebaseApi';
 import { Card, Row, Col, Button, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-//import withUnmounted from '@ishawnwang/withunmounted'
-import { usePromiseTracker,trackPromise  } from "react-promise-tracker";
 
 
 class App extends Component {
-  state = {};
-  hasUnmounted = false;
+  state = {
+    hidden: false,
+    firstHidden: true
+  };
 
   weightedChoice=(weights) => {
     const weightSum = weights.reduce((sum, w) => sum + w)
@@ -27,27 +26,20 @@ class App extends Component {
     let ip = "";
     fetch('https://geolocation-db.com/json/')
       .then((response) => {
-        //console.log(response.json());
         let data = response.json();
         data.then(function (res) {
-          // val is now promiseA's result + 1
-          //console.log(res.IPv4);
           console.log(res.IPv4);
           return res.IPv4;
         });
     });
-
   }
 
   async UNSAFE_componentWillMount() {
     const response = await fetch('https://geolocation-db.com/json/');
     const data = await response.json();
     this.setState({ ip: data.IPv4 });
-    //console.log(data.IPv4);
 
   }
-
-
   componentDidMount(){
 
     FirestoreService.getAll("video-comments-count").get().then((querySnapshot) => {
@@ -75,13 +67,14 @@ class App extends Component {
           arrId: id_comment,
           arrReviews: count_reviews,
           full_comment: listStores[0]['video-comments-count'],
-          choiceIdx: weightedChoiceIdx
+          choiceIdx: weightedChoiceIdx,
+          firstHidden: false
         });
-
-        
       });
 
     });
+
+    
 
   }
 
@@ -90,10 +83,9 @@ class App extends Component {
 
   changeVideoCommentId=(e,review)=> {
 
-    //FirestoreService.getDoc('youtube-comments',this.state.nextCommentId).then((doc) =>{
-    //  console.log(doc.data());
-    //});
-    //trackPromise(
+    this.setState({
+      hidden: true
+    });
     
     let choiceIdx = this.state.choiceIdx;
     let review_count = this.state.arrId[choiceIdx]+","+this.state.arrReviews[choiceIdx]
@@ -106,16 +98,10 @@ class App extends Component {
     fullComment = fullComment.replace(review_count,review_count_before);
     changeArrReviews[choiceIdx] = changeArrReviews[choiceIdx] - 1;
 
-    
-    //);
-
-    //console.log(this.state.arrId[choiceIdx]);
-
     FirestoreService.update('video-comments-count','count',{"video-comments-count": fullComment});
     FirestoreService.db.collection("video-comments-reviews").doc(String(this.state.arrId[choiceIdx])).collection(String(this.state.ip)).doc('reviews').set({"reviews-count":  changeArrReviews[choiceIdx], "type": review});
 
     choiceIdx = this.weightedChoice(changeArrReviews);
-    //console.log(this.state.arrId[choiceIdx]);
 
     let nextCommentId = String(this.state.arrId[choiceIdx]);
     FirestoreService.getDoc('youtube-comments',this.state.arrId[choiceIdx]).get().then((doc) =>{
@@ -125,27 +111,20 @@ class App extends Component {
         comment: doc.data()['comment'],
         arrReviews: changeArrReviews,
         full_comment: fullComment,
-        choiceIdx: choiceIdx
+        choiceIdx: choiceIdx,
+        hidden: false
       });
     });
-    
-    
   }
   
   
   render(){
-    const LoadingIndicator = props => {
-      const { promiseInProgress } = usePromiseTracker();
-      return (
-        promiseInProgress &&
-        <h1>Hey some async call in progress ! </h1>
-      );  
-    }
 
     console.log(this.state);
     return (
-          <Container >
-            <div class="center">
+          <Container className={this.state.firstHidden?"lds-circle":"default"}>
+            <div></div>
+            <div className={this.state.firstHidden?"center box":"center"}>
               <Row >
                 <Col>
                   <Card
@@ -158,23 +137,28 @@ class App extends Component {
                   >
                   <Card.Header>Essa é uma frase positiva, negativa ou neutra?</Card.Header>
                     <Card.Body>
-                      <Card.Text class="center">
-                        <LoadingIndicator/>
-                      {this.state.comment}
+                      <Card.Text class="comment">
+                      <div>
+                        {this.state.comment}
+                      </div>
+                      
                       </Card.Text>
                     </Card.Body>
                     <Card.Footer className="text-muted">
-                      <Row>
-                        <Col>
-                          <Button size="lg" variant="danger" onClick={e => this.changeVideoCommentId(e,-1)} >NEGATIVO</Button>
-                        </Col>
-                        <Col>
-                          <Button size="lg" variant="warning" onClick={e => this.changeVideoCommentId(e,0)}>NEUTRO</Button>
-                        </Col>
-                        <Col>
-                          <Button size="lg" variant="success" onClick={e => this.changeVideoCommentId(e,1)}>POSITIVO</Button>
-                        </Col>
-                      </Row>
+                      <div className={this.state.hidden?"lds-ellipsis":"default"}>
+                        <div></div><div></div><div></div><div></div>
+                        <Row className="button">
+                          <Col >
+                            <Button size="lg" variant="danger" onClick={e => this.changeVideoCommentId(e,-1)} >NEGATIVO</Button>
+                          </Col>
+                          <Col>
+                            <Button size="lg" variant="warning" onClick={e => this.changeVideoCommentId(e,0)}>NEUTRO</Button>
+                          </Col>
+                          <Col>
+                            <Button size="lg" variant="success" onClick={e => this.changeVideoCommentId(e,1)}>POSITIVO</Button>
+                          </Col>
+                        </Row>
+                      </div>
                     </Card.Footer>
                   </Card>
                 </Col>
