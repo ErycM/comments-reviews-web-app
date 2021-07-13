@@ -26,9 +26,16 @@ class App extends Component {
   async UNSAFE_componentWillMount() {
     const response = await fetch('https://geolocation-db.com/json/');
     const data = await response.json();
-    this.setState({ ip: data.IPv4 });
+    if (typeof data.IPv4 !== 'undefined'){
+      console.log(data.IPv4);
+      this.setState({ ip: data.IPv4 });
+    }else{
+      console.log("IP indefinido");
+      this.setState({ ip: String(Date.now()) });
+    }
 
   }
+  
   componentDidMount(){
 
     FirestoreService.getAll("video-comments-count").get().then((querySnapshot) => {
