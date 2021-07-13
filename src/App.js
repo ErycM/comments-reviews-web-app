@@ -4,7 +4,6 @@ import {FirestoreService} from "./Components/firebaseApi";
 import { Card, Row, Col, Button, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
 class App extends Component {
   state = {
     hidden: false,
@@ -37,6 +36,7 @@ class App extends Component {
   }
   
   componentDidMount(){
+    
 
     FirestoreService.getAll("video-comments-count").get().then((querySnapshot) => {
       const listStores = [];
@@ -94,12 +94,14 @@ class App extends Component {
     fullComment = fullComment.replace(review_count,review_count_before);
     changeArrReviews[choiceIdx] = changeArrReviews[choiceIdx] - 1;
 
+    let updatedAt = FirestoreService.firebase.firestore.FieldValue.serverTimestamp();
     FirestoreService.update('video-comments-count','count',{"video-comments-count": fullComment});
-    FirestoreService.db.collection("video-comments-reviews").doc(String(this.state.arrId[choiceIdx])).collection(String(this.state.ip)).doc('reviews').set({"reviews-count":  changeArrReviews[choiceIdx], "type": review});
+    FirestoreService.db.collection("video-comments-reviews").doc(String(this.state.arrId[choiceIdx])).collection(String(this.state.ip)).doc('reviews').set({"reviews-count":  changeArrReviews[choiceIdx], "type": review, "updatedAt": updatedAt});
 
     choiceIdx = this.weightedChoice(changeArrReviews);
 
     let nextCommentId = String(this.state.arrId[choiceIdx]);
+    
     FirestoreService.getDoc('youtube-comments',this.state.arrId[choiceIdx]).get().then((doc) =>{
 
       this.setState({
@@ -108,7 +110,8 @@ class App extends Component {
         arrReviews: changeArrReviews,
         full_comment: fullComment,
         choiceIdx: choiceIdx,
-        hidden: false
+        hidden: false,
+        updatedAt: updatedAt
       });
     });
   }
