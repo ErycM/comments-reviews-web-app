@@ -55,8 +55,8 @@ class App extends Component {
       });
       
       let weightedChoiceIdx = this.weightedChoice(count_reviews);
-
       FirestoreService.getDoc('youtube-comments',id_comment[weightedChoiceIdx]).get().then((doc) =>{
+        //console.log(doc);
         this.setState({
           nextCommentId: id_comment[weightedChoiceIdx],
           comment: doc.data()['comment'],
