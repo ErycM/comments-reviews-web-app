@@ -116,9 +116,8 @@ class App extends Component {
   
   render(){
 
-    //console.log(this.state);
     return (
-          <Container className={this.state.firstHidden?"lds-facebook":"default"}>
+          <Container  className={this.state.firstHidden?"lds-facebook":"default"}>
             <div></div><div></div><div></div>
             <div className={this.state.firstHidden?"center box":"center"}>
               <Row >
@@ -127,7 +126,6 @@ class App extends Component {
                     bg={'Info'.toLowerCase()}
                     key={0}
                     text={'Info'.toLowerCase() === 'light' ? 'dark' : 'white'}
-                    style={{ width: '50rem', height: '30rem' }}
                     className="text-center"
                     border="dark"
                   >
@@ -144,13 +142,13 @@ class App extends Component {
                       <div className={this.state.hidden?"lds-ellipsis":"default"}>
                         <div></div><div></div><div></div><div></div>
                         <Row className="button">
-                          <Col >
+                          <Col sm>
                             <Button size="lg" variant="danger" onClick={e => this.changeVideoCommentId(e,-1)} >NEGATIVO</Button>
                           </Col>
-                          <Col>
+                          <Col sm>
                             <Button size="lg" variant="warning" onClick={e => this.changeVideoCommentId(e,0)}>NEUTRO</Button>
                           </Col>
-                          <Col>
+                          <Col sm>
                             <Button size="lg" variant="success" onClick={e => this.changeVideoCommentId(e,1)}>POSITIVO</Button>
                           </Col>
                         </Row>
