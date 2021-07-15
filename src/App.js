@@ -30,6 +30,7 @@ class App extends Component {
       this.setState({ ip: data.IPv4 });
     }else{
       console.log("IP indefinido");
+      console.log(String(Date.now()));
       this.setState({ ip: String(Date.now()) });
     }
 
@@ -96,7 +97,14 @@ class App extends Component {
 
     let updatedAt = FirestoreService.firebase.firestore.FieldValue.serverTimestamp();
     FirestoreService.update('video-comments-count','count',{"video-comments-count": fullComment});
-    FirestoreService.db.collection("video-comments-reviews").doc(String(this.state.arrId[choiceIdx])).collection(String(this.state.ip)).doc('reviews').set({"reviews-count":  changeArrReviews[choiceIdx], "type": review, "updatedAt": updatedAt});
+
+    let ip_state = String(this.state.ip)
+
+    if(ip_state == 'undefined'){
+      ip_state = String(Date.now());
+    }
+
+    FirestoreService.db.collection("video-comments-reviews").doc(String(this.state.arrId[choiceIdx])).collection(ip_state).doc('reviews').set({"reviews-count":  changeArrReviews[choiceIdx], "type": review, "updatedAt": updatedAt});
 
     choiceIdx = this.weightedChoice(changeArrReviews);
 

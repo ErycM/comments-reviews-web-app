@@ -1,7 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 
-
+/*
 const firebaseConfig = {
   apiKey: "AIzaSyBLoS80wwL8rXXx_LVCaS2lfkGMnpx3xzE",
   authDomain: "eletronics-sentiment-analysis.firebaseapp.com",
@@ -12,9 +12,9 @@ const firebaseConfig = {
   appId: "1:347286621701:web:394158e472c414d503d66c",
   measurementId: "G-C6VWW0LKDG"
 };
+*/
 
 
-/*
 const firebaseConfig = {
   apiKey: "AIzaSyBwGvKd9B0SmRa_KvVhJvgVO1P3ozicAEU",
   authDomain: "testes-2eb48.firebaseapp.com",
@@ -24,7 +24,7 @@ const firebaseConfig = {
   messagingSenderId: "491311724969",
   appId: "1:491311724969:web:e3a2d388d48436d4adecb8"
 };
-*/
+
 
 
 firebase.initializeApp(firebaseConfig);
