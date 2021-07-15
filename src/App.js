@@ -123,8 +123,6 @@ class App extends Component {
           <Container  className={this.state.firstHidden?"lds-facebook":"default"}>
             <div></div><div></div><div></div>
             <div className={this.state.firstHidden?"center box":"center"}>
-              <Row >
-                <Col>
                   <Card
                     bg={'Info'.toLowerCase()}
                     key={0}
@@ -158,8 +156,6 @@ class App extends Component {
                       </div>
                     </Card.Footer>
                   </Card>
-                </Col>
-              </Row>
             </div>
           </Container>
     );
