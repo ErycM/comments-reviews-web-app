@@ -14,19 +14,6 @@ const firebaseConfig = {
 };
 
 
-/*
-const firebaseConfig = {
-  apiKey: "AIzaSyBwGvKd9B0SmRa_KvVhJvgVO1P3ozicAEU",
-  authDomain: "testes-2eb48.firebaseapp.com",
-  databaseURL: "https://testes-2eb48.firebaseio.com",
-  projectId: "testes-2eb48",
-  storageBucket: "testes-2eb48.appspot.com",
-  messagingSenderId: "491311724969",
-  appId: "1:491311724969:web:e3a2d388d48436d4adecb8"
-};
-*/
-
-
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
